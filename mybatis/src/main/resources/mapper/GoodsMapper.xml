@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ksmart.mybatis.mapper.GoodsMapper">
+	<resultMap type="Goods" id="goodsResultMap">
+		<id 	column="g_code"  		property="goodsCode" />
+		<result column="g_name"  		property="goodsName"/>
+		<result column="g_price"  		property="goodsPrice"/>
+		<result column="g_seller_id"  	property="goodsSellerId"/>
+		<result column="g_reg_date"  	property="goodsRegDate"/>
+		<association property="sellerInfo" javaType="Member">
+			<id 	column="m_id" 		property="memberId" />
+			<result column="m_pw" 		property="memberPw"/>
+			<result column="m_level" 	property="memberLevel"/>
+			<result column="m_name" 	property="memberName"/>
+			<result column="m_addr" 	property="memberAddr"/>
+			<result column="m_email" 	property="memberEmail"/>
+			<result column="m_reg_date" property="memberRegDate"/>
+		</association>
+	</resultMap>
+	<delete id="removeGoodsByGoodsCode" parameterType="String">
+		/* 상품삭제 */
+		DELETE
+		FROM
+		 	tb_goods 
+		WHERE 
+			g_code = #{goodsCode};
+	</delete>
+	<delete id="removeOrderByGoodsCode" parameterType="String">
+		/* 주문상품삭제 */
+		DELETE
+			o
+		FROM
+		 	tb_goods AS g
+		 	INNER JOIN 
+		 	tb_order AS o
+		 	ON g.g_code = o.o_g_code
+		WHERE 
+			g.g_code = #{goodsCode};
+	</delete>
+	
+	<select id="isSellerByGoodsCode" parameterType="String" resultType="boolean">
+		/* 상품 판매자 아이디 조회 */
+		SELECT
+			IF(COUNT(1)=0, 0, 1)
+		FROM
+			tb_member AS m
+			INNER JOIN 
+			tb_goods AS g
+			ON m.m_id = g.g_seller_id
+		WHERE 
+			m.m_id = #{memberId}
+			AND 
+			g.g_code = #{goodsCode};
+	</select>
+	
+	<update id="modifyGoods" parameterType="Goods">
+		/*상품수정*/
+		UPDATE tb_goods
+		<set>
+			<if test="goodsName != null and goodsName !=''">
+				g_name = #{goodsName}
+			</if>
+			<if test="goodsPrice != null and goodsPrice !=''">
+				,g_price = #{goodsPrice}
+			</if>
+		</set>
+		WHERE
+			g_code = #{goodsCode};
+	</update>
+	
+	
+	<select id="getGoodsInfoByCode" parameterType="String" resultMap="goodsResultMap">
+		/* 특정상품조회*/
+		SELECT
+			 g_code
+			,g_name
+			,g_price
+			,g_seller_id
+		FROM
+			tb_goods
+		WHERE
+			g_code = #{goodsCode}
+	</select>
+	
+	<insert id="addGoods" parameterType="Goods">
+		/* 상품 등록 */
+		INSERT INTO tb_goods
+		(g_code, g_name, g_price, g_seller_id, g_reg_date)
+		VALUES 
+		(sf_new_goods_code(), #{goodsName}, #{goodsPrice}, #{goodsSellerId}, CURDATE());
+	</insert>
+			
+	<select id="getGoodsList" resultMap="goodsResultMap" parameterType="map">
+		/* 상품목록조회 */
+		SELECT
+			 g.g_code
+			,g.g_name
+			,g.g_price
+			,g.g_seller_id
+			,m.m_name
+			,m.m_email
+			,g.g_reg_date
+		FROM
+			tb_goods as g
+			INNER JOIN 
+			tb_member as m
+			ON 
+			g.g_seller_id = m.m_id
+		<where>
+			<if test="searchKey != null and searchKey != ''">
+				${searchKey} = #{searchValue};
+			</if>
+		</where>
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</mapper>

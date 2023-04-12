@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{layout/default}">
+<head>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/table.css}" />
+	<script th:inline="javascript">
+		let msg = [[${msg}]];
+		if(msg) alert(msg);
+	</script>
+</head>
+
+<th:block layout:fragment="customContents">
+	<table>
+		<thead>
+			<tr>
+				<th>상품코드</th>
+				<th>상품명</th>
+				<th>상품가격</th>
+				<th>판매자아이디</th>
+				<th>판매자명</th>
+				<th>판매자이메일</th>
+				<th>상품등록일자</th>
+				<th>수정</th>
+				<th>삭제</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:unless="${goodsList == null}" th:each=" l : ${goodsList}">
+				<td th:text="${l.goodsCode}"></td>
+				<td th:text="${l.goodsName}"></td>
+				<td th:text="|₩ ${#numbers.formatInteger(l.goodsPrice, 3, 'COMMA')}|"></td>
+				<td th:text="${l.goodsSellerId}"></td>
+				<td th:text="${l.sellerInfo.memberName}"></td>
+				<td th:text="${l.sellerInfo.memberEmail}"></td>
+				<td th:text="${l.goodsRegDate}"></td>
+				<td>
+					<a th:href="@{/goods/modifyGoods(goodsCode=${l.goodsCode})}">수정</a>
+					<!-- 수정버튼을 누르면 이경로로 이동하는데 goodsCode = ${l.goodsCode} 저장시킨다(그린다).-->
+				</td>
+				<td>
+					<!-- 삭제버튼을 누르면 goods/removeGoods를 URL을 요청한다. -->
+					<a th:href="@{/goods/removeGoods(goodsCode=${l.goodsCode})}">삭제</a>
+				</td>
+			</tr>
+			<tr th:if="${goodsList == null}">
+				<td colspan="7">등록된 상품의 정보가 없습니다.</td>
+			</tr>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		</tbody>
+	</table>	
+</th:block>
+
+</html>

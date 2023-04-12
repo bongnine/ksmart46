@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{layout/default}">
+<head>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/form.css}" />
+</head>
+<th:block layout:fragment="customJs">
+	<script th:src="@{/js/jquery-3.6.4.js}"></script>
+	<script>
+		/* $('#resetBtn').click(function(){
+			location.href = '/goods/goodsList';
+			//history.go(-1);
+		}); */
+	</script>
+</th:block>
+
+<th:block layout:fragment="customContents">
+	<!-- 포스트 방식의 /goods/modifyGoods URL요청하는 form생성 하고 submit버튼을 클릭시 제출한다.  -->
+	<form id="modifyGoodsForm" th:action="@{/goods/modifyGoods}" method="post">
+		<table th:object="${goodsInfo}">
+			<tbody>
+				<tr>
+					<td class="labeltd">
+						<label for="goodsCode">상품코드</label>
+					</td>
+					<td>
+						<input type="text" id="goodsCode" th:value="*{goodsCode}" 
+							   name="goodsCode" readonly="readonly"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="labeltd">
+						<label for="goodsName">상품명</label>
+					</td>
+					<td>
+						<input type="text" id="goodsName" th:value="*{goodsName}"
+							   name="goodsName" placeholder="상품명을 입력해주세요."/>
+					</td>
+				</tr>								
+				<tr>
+					<td class="labeltd">
+						<label for="goodsPrice">상품가격</label>
+					</td>
+					<td>
+						<input type="number" id="goodsPrice" th:value="*{goodsPrice}"
+							   name="goodsPrice" placeholder="상품가격을 입력해주세요."/>
+					</td>
+				</tr>								
+				<tr>
+					<td class="labeltd">
+						<label for="goodsSellerId">판매자아이디</label>
+					</td>
+					<td>
+						<input type="text" id="goodsSellerId" th:value="*{goodsSellerId}"
+							   name="goodsSellerId" readonly="readonly"/>
+					</td>
+				</tr>								
+				<tr>
+					<td colspan="2">
+						<button type="submit" id="submitBtn">상품수정</button>
+						<button type="reset" id="resetBtn">입력취소</button>
+					</td>
+				</tr>								
+			</tbody>
+		</table>
+	</form>
+			
+</th:block>
+
+</html>

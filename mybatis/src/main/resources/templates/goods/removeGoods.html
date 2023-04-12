@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{layout/default}">
+<head>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/form.css}" />
+</head>
+<th:block layout:fragment="customJs">
+	<script th:src="@{/js/jquery-3.6.4.js}"></script>
+	<script>
+		$('#submitBtn').click(function(){
+			const memberPwEle = $('#memberPw');
+			let memberPw =	memberPwEle.val();
+			if(typeof memberPw == 'undefined' || memberPw == null || memberPw == ''){
+				alert('회원비밀번호를 입력해주세요');
+				memberPwEle.focus();
+				return false;
+			}
+			$('#removeGoodsForm').submit();
+		});
+		
+		$('#resetBtn').click(function(){
+			location.href = '/goods/goodsList';
+			//history.go(-1);
+		});
+	</script>
+</th:block>
+
+<th:block layout:fragment="customContents">
+	<form id="removeGoodsForm" th:action="@{/goods/removeGoods}" method="post">
+		<table>
+			<tbody>
+				<tr>
+					<td class="labeltd">
+						<label for="goodsCode">상품코드</label>
+					</td>
+					<td>
+						<input type="text" id="goodsCode" th:value="${goodsCode}" 
+							   name="goodsCode" readonly="readonly"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="labeltd">
+						<label for="memberId">회원아이디</label>
+					</td>
+					<td>
+						<input type="text" id="memberId" th:value="${session.SID}" 
+							   name="memberId" placeholder="회원아이디를 입력해주세요." readonly="readonly"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="labeltd">
+						<label for="memberPw">회원비밀번호</label>
+					</td>
+					<td>
+						<input type="text" id="memberPw" 
+							   name="memberPw" placeholder="회원비밀번호를 입력해주세요."/>
+					</td>
+				</tr>															
+				<tr>
+					<td colspan="2">
+						<button type="button" id="submitBtn">상품삭제</button>
+						<button type="button" id="resetBtn">입력취소</button>
+					</td>
+				</tr>								
+			</tbody>
+		</table>
+	</form>
+			
+</th:block>
+
+</html>

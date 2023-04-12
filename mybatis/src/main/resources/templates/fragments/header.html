@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<div id="header" th:fragment="headerFragment" >
+		상단메뉴 <br>
+		/fragments/header.html <br>
+		<a th:if="${session.SLEVEL == null} or ${session.SLEVEL} < 2" th:href="@{/member/addMember}">회원가입</a>
+		<a th:if="${session.SLEVEL != null} and ${session.SLEVEL} < 2" th:href="@{/member/memberList}">회원목록</a>
+		<a th:if="${session.SLEVEL != null} and ${session.SLEVEL} < 3" th:href="@{/goods/addGoods}">상품등록</a>
+		<a th:if="${session.SLEVEL != null} and ${session.SLEVEL} < 4" th:href="@{/goods/goodsList}">상품조회</a>
+		<a th:if="${session.SLEVEL != null} and ${session.SLEVEL} < 2" th:href="@{/goods/sellerList}">판매자별상품조회</a>
+		<a th:if="${session.SID == null}" th:href="@{/member/login}">로그인</a>
+		<a th:unless="${session.SID == null}" th:href="@{/member/logout}">로그아웃</a>
+		
+	</div>
+</html>

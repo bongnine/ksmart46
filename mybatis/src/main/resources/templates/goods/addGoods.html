@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{layout/default}">
+<head>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/form.css}" />
+</head>
+<th:block layout:fragment="customJs">
+	<script th:src="@{/js/jquery-3.6.4.js}"></script>
+	<script th:inline="javascript">
+		$(function(){
+			//alert('제이쿼리')
+			function validationCheck(ele){
+				let data = $(ele).val();
+				let isValid = true;
+				if(typeof data == 'undefined' || data == null || data == ''){
+					let msg = $(ele).parents('tr').find('label').text();
+					alert(`${msg} 필수 항목입니다.`)
+					$(ele).focus();
+					isValid = false;	
+				}
+				return isValid;
+			}
+			
+			const memberLevel = [[${session.SLEVEL}]];
+			
+			if(memberLevel == '1'){
+				let request = $.ajax({
+					  url: '/goods/sellersInfo',
+					  method: 'POST',
+					  dataType: 'json'
+				});
+					 
+				request.done(function( data ) {
+					const sellerList = data;
+					if(sellerList != null){
+						$(sellerList).each(function(idx, item){
+							let memberId = item.memberId;
+							let memberName = item.memberName;
+							const newEle = $(`<option value="${memberId}"> ${memberId} &emsp; :::: &emsp; ${memberName}</option>`);
+							$('#sellerInfo').append(newEle);
+						})
+					}
+				});
+					 
+				request.fail(function( jqXHR, textStatus ) {
+					alert(`Request failed: ${textStatus}`);
+				});
+			}
+			
+			$('#submitBtn').click(function(){
+				let isSubmit = true;
+				
+				if(memberLevel == '1'){
+					const $selectEle = $('#sellerInfo');
+					isSubmit = validationCheck($selectEle);
+					$selectEle.focus();
+					if(!isSubmit) return;
+				}
+				
+				let $inputEles = $('#addGoodsForm input');
+				$inputEles.each(function(idx, item){
+					isSubmit = validationCheck(item);
+					return isSubmit;
+				});
+				
+				if(isSubmit) $('#addGoodsForm').submit();
+				
+			});
+		});
+	
+	</script>
+</th:block>
+
+<th:block layout:fragment="customContents">
+	<form id="addGoodsForm" th:action="@{/goods/addGoods}" method="post">
+		<table>
+			<tbody>
+				<tr th:if="${session.SLEVEL == '2'}">
+					<td class="labeltd">
+						<label for="sellerId">판매자아이디</label>
+					</td>
+					<td>
+						<input type="text" id="goodsSellerId" name="goodsSellerId" th:value="${session.SID}" readonly="readonly"/>
+					</td>
+				</tr>
+				<tr th:if="${session.SLEVEL == '1'}">
+					<td class="labeltd">
+						<label for="memberLevel">판매자목록</label>
+					</td>
+					<td>
+						<select id="sellerInfo" name="goodsSellerId">
+							<option value="">판매자아이디를 선택해주세요</option>
+						</select>
+					</td>
+				</tr>								
+				<tr>
+					<td class="labeltd">
+						<label for="goodsName">상품명</label>
+					</td>
+					<td>
+						<input type="text" id="goodsName" 
+							   name="goodsName" placeholder="상품명을 입력해주세요."/>
+					</td>
+				</tr>								
+				<tr>
+					<td class="labeltd">
+						<label for="goodsPrice">상품가격</label>
+					</td>
+					<td>
+						<input type="number" id="goodsPrice" min="0"
+							   name="goodsPrice" placeholder="숫자로 입력해주세요."/>
+					</td>
+				</tr>								
+				<tr>
+					<td colspan="2">
+						<button type="button" id="submitBtn">상품등록</button>
+						<button type="reset" id="resetBtn">입력취소</button>
+					</td>
+				</tr>								
+			</tbody>
+		</table>
+	</form>
+			
+</th:block>
+
+</html>

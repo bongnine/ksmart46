@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{layout/default}">
+<head>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/form.css}" />
+</head>
+<th:block layout:fragment="customJs">
+	<script th:src="@{/js/jquery-3.6.4.js}"></script>
+	<script>
+		$('#resetBtn').click(function(){
+			location.href = '/member/memberList';
+			//history.go(-1);
+		});
+	</script>
+</th:block>
+
+<th:block layout:fragment="customContents">
+	<form id="modifyMemberForm" th:action="@{/member/modifyMember}" method="post">
+		<table th:object="${memberInfo}">
+			<tbody>
+				<tr>
+					<td class="labeltd">
+						<label for="memberId">회원아이디</label>
+					</td>
+					<td>
+						<input type="text" id="memberId" th:value="*{memberId}" 
+							   name="memberId" placeholder="회원아이디를 입력해주세요." readonly="readonly"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="labeltd">
+						<label for="memberPw">회원비밀번호</label>
+					</td>
+					<td>
+						<input type="text" id="memberPw" th:value="*{memberPw}"
+							   name="memberPw" placeholder="회원비밀번호를 입력해주세요."/>
+					</td>
+				</tr>								
+				<tr>
+					<td class="labeltd">
+						<label for="memberLevel">회원등급</label>
+					</td>
+					<td>
+					<!--/* th:selected="${가져온등급리스트 == 특정회원등급}" */-->
+						<select id="memberLevel" name="memberLevel">
+							<th:block th:unless="${memberLevelList == null}"
+									  th:each="l : ${memberLevelList}">
+								<option th:value="${l.levelNum}"
+										th:selected="${l.levelNum} == *{memberLevel}">
+										[[${l.levelName}]]
+								</option>
+							</th:block>
+							<th:block th:if="${memberLevelList == null}">
+								<option>등록된 회원등급이 없습니다.</option>
+							</th:block>
+						</select>
+					</td>
+				</tr>								
+				<tr>
+					<td class="labeltd">
+						<label for="memberName">회원이름</label>
+					</td>
+					<td>
+						<input type="text" id="memberName" th:value="*{memberName}"
+							   name="memberName" placeholder="이름을 입력해주세요." />
+					</td>
+				</tr>								
+				<tr>
+					<td class="labeltd">
+						<label for="memberAddr">회원주소</label>
+					</td>
+					<td>
+						<input type="text" id="memberAddr" th:value="*{memberAddr}"
+							   name="memberAddr" placeholder="주소를 입력해주세요." />
+					</td>
+				</tr>								
+				<tr>
+					<td class="labeltd">
+						<label for="memberEmail">회원이메일</label>
+					</td>
+					<td>
+						<input type="text" id="memberEmail" th:value="*{memberEmail}"
+							   name="memberEmail" placeholder="이메일을 입력해주세요." />
+					</td>
+				</tr>								
+				<tr>
+					<td colspan="2">
+						<button type="submit" id="submitBtn">회원수정</button>
+						<button type="button" id="resetBtn">입력취소</button>
+					</td>
+				</tr>								
+			</tbody>
+		</table>
+	</form>
+			
+</th:block>
+
+</html>

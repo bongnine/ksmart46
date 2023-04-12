@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{layout/default}">
+<head>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/table.css}" />
+</head>
+
+<th:block layout:fragment="customContents">
+	<div th:include="~{search/search :: searchFragment2}"></div><br>
+	<table>
+		<thead>
+			<tr>
+				<th>판매자아이디</th>
+				<th>판매자명</th>
+				<th>판매자이메일</th>
+				<th>상품코드</th>
+				<th>상품명</th>
+				<th>상품가격</th>
+				<th>상품등록일자</th>
+			</tr>
+		</thead>
+		<tbody>
+			<th:block th:unless="${goodsListBySeller == null}" th:each=" l : ${goodsListBySeller}">
+				<th:block th:unless="${l.sellerList == null}" 
+						  th:each="gl, status : ${l.sellerList}">
+					<tr>
+						<th:block th:if="${status.index == 0}">
+							<td th:rowspan="${status.size}" th:text="${l.memberId}"></td>
+							<td th:rowspan="${status.size}" th:text="${l.memberName}"></td>
+							<td th:rowspan="${status.size}" th:text="${l.memberEmail}"></td>
+						</th:block>
+						<td th:text="${gl.goodsCode}"></td>
+						<td th:text="${gl.goodsName}"></td>
+						<td th:text="${gl.goodsPrice}"></td>
+						<td th:text="${gl.goodsRegDate}"></td>
+					</tr>
+				</th:block>
+				<th:block th:if="${l.sellerList == null}">
+					<tr>
+						<td th:text="${l.memberId}"></td>
+						<td th:text="${l.memberName}"></td>
+						<td th:text="${l.memberEmail}"></td>
+						<td colspan="4">등록된 상품의 정보가 없습니다.</td>
+					</tr>
+				</th:block>
+			</th:block>
+			<tr th:if="${goodsListBySeller == null}">
+				<td colspan="7">등록된 판매자의 정보가 없습니다.</td>
+			</tr>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		</tbody>
+	</table>	
+</th:block>
+
+</html>
